@@ -6,8 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 import time
-
 app = FastAPI()
 
 class WaferRequest(BaseModel):
@@ -31,7 +31,8 @@ def run_selenium_script(account, password, start_date, end_date, status, done_st
         'download.default_directory': '/tmp'   # 通用於 Docker/雲端
     }
     options.add_experimental_option('prefs', prefs)
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         login_url = 'https://eip.playnitride.com/UOF/'
