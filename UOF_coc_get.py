@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 import time
+
 app = FastAPI()
 
 class WaferRequest(BaseModel):
@@ -24,6 +25,17 @@ def run_selenium_script(account, password, start_date, end_date, status, done_st
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-setuid-sandbox')
+    options.add_argument('--window-size=1280,1696')
+    options.add_argument('--disable-infobars')
+    options.add_argument('--disable-extensions')
+    options.add_argument('--disable-browser-side-navigation')
+    options.add_argument('--disable-features=VizDisplayCompositor')
+
+    # 這一行很關鍵，指定 Chrome binary 路徑
+    options.binary_location = "/usr/bin/google-chrome"
+
     prefs = {
         'download.prompt_for_download': False,
         'download.directory_upgrade': True,
@@ -55,8 +67,8 @@ def run_selenium_script(account, password, start_date, end_date, status, done_st
                                      "ctl00_ContentPlaceHolder1_rdpEndTime_dateInput_ClientState", end_date)
         if status == '1':
             if done_start_date:
-                update_date_and_client_state(driver, "ctl00_ContentPlaceHolder1_rdpEndFormStart_dateInput",
-                                             "ctl00_ContentPlaceHolder1_rdpEndFormStart_dateInput_ClientState",
+                update_date_and_client_state(driver, "ctl00_ContentPlaceHolder1_rdpEndFormStart_date_input",
+                                             "ctl00_ContentPlaceHolder1_rdpEndFormStart_date_input_ClientState",
                                              done_start_date)
             if done_end_date:
                 update_date_and_client_state(driver, "ctl00_ContentPlaceHolder1_rdpEndFormEnd_date_input",
